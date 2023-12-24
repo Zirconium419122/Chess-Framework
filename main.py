@@ -7,14 +7,51 @@ class Bitboard:
         self.queens = [0] * 2   # One for white, one for black
         self.kings = [0] * 2    # One for white, one for black
 
+    def initialize_starting_position(self):
+        # Set up the starting position of a chess game
+
+        # White and black pawns
+        for i in range(self.decode_square("a2"), self.decode_square("h2") + 1):
+            self.set_piece(1, 0, i)
+            self.set_piece(1, 1, i + 40)
+
+        # White and black knights
+        for i in range(2):
+            self.set_piece(2, 0, i if i == 1 else i + 6)
+            self.set_piece(2, 1, i + 56 if i == 1 else i + 62)
+        
+        # White and black bishops
+        for i in range(2):
+            self.set_piece(3, 0, i + 1 if i == 1 else i + 5)
+            self.set_piece(3, 1, i + 57 if i == 1 else i + 61)
+        
+        # White and black rooks
+        for i in range(2):
+            self.set_piece(4, 0, i - 1 if i == 1 else i + 7)
+            self.set_piece(4, 1, i + 55 if i == 1 else i + 63)
+        
+        # White and black queens
+        self.set_piece(5, 0, 4)
+        self.set_piece(5, 1, 60)
+
+        # White and black kings
+        self.set_piece(6, 0, 3)
+        self.set_piece(6, 1, 59)
+
+        # ... continue for the other pieces
+
+
     def set_piece(self, piece_type, color, square):
         # Set the bit for the given piece type, color, and square to 1
+        if isinstance(square, str):
+            square = self.decode_square(square)
+
         if piece_type == 1:
             self.pawns[color] |= 1 << square
         elif piece_type == 2:
             self.knights[color] |= 1 << square
         elif piece_type == 3:
-            self.knights[color] |= 1 << square
+            self.bishops[color] |= 1 << square
         elif piece_type == 4:
             self.rooks[color] |= 1 << square
         elif piece_type == 5:
@@ -25,6 +62,9 @@ class Bitboard:
 
     def get_piece(self, piece_type, color, square):
         # Check if the bit for the given piece type, color, and square is 1
+        if isinstance(square, str):
+            square = self.decode_square(square)
+
         if piece_type == 1:
             return (self.pawns[color] & (1 << square)) != 0
         elif piece_type == 2:
@@ -37,6 +77,21 @@ class Bitboard:
             return (self.queens[color] & (1 << square)) != 0
         elif piece_type == 6:
             return (self.kings[color] & (1 << square)) != 0
+        
+    @staticmethod
+    def decode_square(coord):
+        if len(coord) != 2:
+            raise ValueError("Invalid coordinate length")
+        
+        file_char, rank_char = coord[0].lower(), coord[1]
+
+        if file_char not in "abcdefgh" or rank_char not in "12345678":
+            raise ValueError("Invalid coordinate")
+
+        file_index = ord(file_char) - ord("a")
+        rank_index = int(rank_char) - 1
+
+        return 8 * rank_index + file_index
 
     def print_board(self):
         for color in range(2):
@@ -61,13 +116,19 @@ class Bitboard:
             print("".join("X" if square else "." for square in row))
 
 
+
+
 # Example usage:
 board = Bitboard()
-for i in range(8, 16):
-    board.set_piece(1, 0, i)  # Set a white pawn on square 8 - 16
-for i in range(48, 56):
-    board.set_piece(1, 1, i)  # Set a black pawn on square 51 (7th rank, 4th file)
+# for i in range(8, 16):
+#     board.set_piece(1, 0, i)  # Set a white pawn on square 8 - 16
+# for i in range(48, 56):
+#     board.set_piece(1, 1, i)  # Set a black pawn on square 51 (7th rank, 4th file)
 
-board.set_piece(5, 0, 5)
+# board.set_piece(5, 0, "d1")
+# board.set_piece(6, 0, "e1")
+
+board.initialize_starting_position()
+
 
 board.print_board()
