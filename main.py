@@ -38,8 +38,6 @@ class Bitboard:
         self.set_piece(6, 0, 3)
         self.set_piece(6, 1, 59)
 
-        # ... continue for the other pieces
-
 
     def set_piece(self, piece_type, color, square):
         # Set the bit for the given piece type, color, and square to 1
@@ -58,7 +56,21 @@ class Bitboard:
             self.queens[color] |= 1 << square
         elif piece_type == 6:
             self.kings[color] |= 1 << square
-
+    
+    def clear_square(self, piece_type, color, square):
+        # Clear the bit for the given piece type, color, and square
+        if piece_type == 1:
+            self.pawns[color] &= ~(1 << square)
+        elif piece_type == 2:
+            self.knights[color] &= ~(1 << square)
+        elif piece_type == 3:
+            self.bishops[color] &= ~(1 << square)
+        elif piece_type == 4:
+            self.rooks[color] &= ~(1 << square)
+        elif piece_type == 5:
+            self.queens[color] &= ~(1 << square)
+        elif piece_type == 6:
+            self.kings[color] &= ~(1 << square)
 
     def get_piece(self, piece_type, color, square):
         # Check if the bit for the given piece type, color, and square is 1
@@ -114,21 +126,31 @@ class Bitboard:
         for rank in range(8):
             row = [(bitboard >> (8 * rank + file)) & 1 for file in range(8)]
             print("".join("X" if square else "." for square in row))
+    
+    def move_piece(self, piece_type, color, from_square, to_square):
+        # Move a piece from one square to another
+        if isinstance(from_square, str):
+            from_square = self.decode_square(from_square)
+        if isinstance(to_square, str):
+            to_square = self.decode_square(to_square)
 
+        # Clear the source square
+        self.clear_square(piece_type, color, from_square)
 
-
+        # Set the destination square
+        self.set_piece(piece_type, color, to_square)
 
 # Example usage:
-board = Bitboard()
-# for i in range(8, 16):
-#     board.set_piece(1, 0, i)  # Set a white pawn on square 8 - 16
-# for i in range(48, 56):
-#     board.set_piece(1, 1, i)  # Set a black pawn on square 51 (7th rank, 4th file)
+chess_board = Bitboard()
+chess_board.initialize_starting_position()
 
-# board.set_piece(5, 0, "d1")
-# board.set_piece(6, 0, "e1")
-
-board.initialize_starting_position()
+# Move a white pawn from e2 to e4
+chess_board.move_piece(1, 0, 'e2', 'e4')
+chess_board.print_board()
 
 
-board.print_board()
+
+
+
+
+
