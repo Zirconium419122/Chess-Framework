@@ -139,14 +139,49 @@ class Bitboard:
 
         # Set the destination square
         self.set_piece(piece_type, color, to_square)
+    
+    def generate_pawn_moves(self, color, square):
+        moves = []
+
+        if isinstance(square, str):
+            square = self.decode_square(square)
+
+        # Pawn moves forward one square
+        single_move = square + (8 if color == 0 else -8)
+        if self.is_square_empty(single_move):
+            moves.append(single_move)
+
+            # Pawn double move from the starting position
+            starting_rank = 1 if color == 0 else 6
+            double_move = square + (16 if color == 0 else -16)
+            if square // 8 == starting_rank and self.is_square_empty(double_move):
+                moves.append(double_move)
+
+        # Pawn captures
+        left_capture = single_move - 1
+        right_capture = single_move + 1
+        if self.is_square_enemy(left_capture, color):
+            moves.append(left_capture)
+        if self.is_square_enemy(right_capture, color):
+            moves.append(right_capture)
+
+        return moves
+
+    def is_square_empty(self, square):
+        # Check if the square is empty (no pieces present)
+        return not any(self.get_piece(piece_type, color, square) for piece_type in range(1, 7) for color in range(2))
+
+    def is_square_enemy(self, square, color):
+        # Check if the square is occupied by an enemy piece
+        return any(self.get_piece(piece_type, 1 - color, square) for piece_type in range(1, 7))
 
 # Example usage:
 chess_board = Bitboard()
 chess_board.initialize_starting_position()
 
-# Move a white pawn from e2 to e4
-chess_board.move_piece(1, 0, 'e2', 'e4')
-chess_board.print_board()
+# Find legal moves for a white pawn at e2
+pawn_moves = chess_board.generate_pawn_moves(0, "e2")
+print("Pawn moves:", pawn_moves)
 
 
 
