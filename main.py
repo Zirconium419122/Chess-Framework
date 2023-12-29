@@ -166,6 +166,32 @@ class Bitboard:
             moves.append(right_capture)
 
         return moves
+    
+    def generate_knight_moves(self, color, square):
+        moves = []
+        
+        if isinstance(square, str):
+            square = self.decode_square(square)
+
+        row = square // 8
+        col = square % 8
+
+        # Define the 8 possible moves of a knight
+        knight_moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1)]
+
+        for move in knight_moves:
+            new_row = row + move[0]
+            new_col = col + move[1]
+
+            # Check if the target square is within the board bounds
+            if 0 <= new_row < 8 and 0 <= new_col < 8:
+                # Check if the target square is empty or occupied by an enemy piece
+                target_square = new_row * 8 + new_col
+                if not self.is_square_ally(target_square, color):
+                    moves.append(target_square)
+
+        return moves
+
 
     def is_square_empty(self, square):
         # Check if the square is empty (no pieces present)
@@ -174,14 +200,20 @@ class Bitboard:
     def is_square_enemy(self, square, color):
         # Check if the square is occupied by an enemy piece
         return any(self.get_piece(piece_type, 1 - color, square) for piece_type in range(1, 7))
+    
+    def is_square_ally(self, square, color):
+        # Check if the square is occupied by an ally piece
+        return any(self.get_piece(piece_type, color, square) for piece_type in range(1, 7))
 
 # Example usage:
 chess_board = Bitboard()
 chess_board.initialize_starting_position()
 
-# Find legal moves for a white pawn at e2
-pawn_moves = chess_board.generate_pawn_moves(0, "e2")
-print("Pawn moves:", pawn_moves)
+# Find legal moves for a white knight at g1
+knight_moves = chess_board.generate_knight_moves(0, "g1")
+print("Knight moves:", knight_moves)
+chess_board.move_piece(2, 0, "g1", 21)
+chess_board.print_board()
 
 
 
