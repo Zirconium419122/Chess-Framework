@@ -192,6 +192,38 @@ class Bitboard:
 
         return moves
 
+    def generate_bishop_moves(self, color, square):
+        moves = []
+
+        if isinstance(square, str):
+            square = self.decode_square(square)
+
+        # Get the column and row of the current square
+        col, row = square % 8, square // 8
+
+        # Define the bishop move directions
+        bishop_directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
+
+        for direction in bishop_directions:
+            dir_col, dir_row = direction
+            target_col, target_row = col + dir_col, row + dir_row
+
+            # Continue moving diagonally until reaching the board edge
+            while 0 <= target_col < 8 and 0 <= target_row < 8:
+                target_square = 8 * target_row + target_col
+
+                # Check if the target square is empty or occupied by an enemy piece
+                if not self.is_square_ally(target_square, color):
+                    moves.append(target_square)
+
+                    # If the target square is occupied by an enemy, stop sliding in that direction
+                    if not self.is_square_empty(target_square):
+                        break
+
+                target_col, target_row = target_col + dir_col, target_row + dir_row
+
+        return moves
+
 
     def is_square_empty(self, square):
         # Check if the square is empty (no pieces present)
@@ -209,10 +241,11 @@ class Bitboard:
 chess_board = Bitboard()
 chess_board.initialize_starting_position()
 
-# Find legal moves for a white knight at g1
-knight_moves = chess_board.generate_knight_moves(0, "g1")
-print("Knight moves:", knight_moves)
-chess_board.move_piece(2, 0, "g1", 21)
+# Find legal moves for a white bishop at c1
+chess_board.move_piece(1, 0, "d2", "d4")
+bishop_moves = chess_board.generate_bishop_moves(0, "c1")
+print("Bishop moves:", bishop_moves)
+chess_board.move_piece(3, 0, "c1", 38)
 chess_board.print_board()
 
 
