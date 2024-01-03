@@ -224,6 +224,35 @@ class Bitboard:
 
         return moves
 
+    def generate_rook_moves(self, color, square): 
+        moves = []
+
+
+        # Get the column and row of the current square 
+        col, row = square % 8, square // 8
+
+        # Define the rook move directions
+        rook_directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+        for direction in rook_directions: 
+            dir_col, dir_row = direction 
+            target_col, target_row = col + dir_col, row + dir_row
+
+            # Continue moving horizontally or vertically until reaching the board edge
+            while 0 <= target_col < 8 and 0 <= target_row < 8: 
+                target_square = 8 * target_row + target_col 
+                
+                # Check if the target square is empty or occupied by an enemy piece 
+                if not self.is_square_ally(target_square, color): 
+                    moves.append(target_square) 
+                    
+                    # If the target square is occupied by an enemy, stop sliding in that direction 
+                    if not self.is_square_empty(target_square): 
+                        break 
+                target_col, target_row = target_col + dir_col, target_row + dir_row 
+            
+            return moves
+
 
     def is_square_empty(self, square):
         # Check if the square is empty (no pieces present)
@@ -237,16 +266,13 @@ class Bitboard:
         # Check if the square is occupied by an ally piece
         return any(self.get_piece(piece_type, color, square) for piece_type in range(1, 7))
 
-# Example usage:
-chess_board = Bitboard()
+# Example usage: 
+chess_board = Bitboard() 
 chess_board.initialize_starting_position()
 
-# Find legal moves for a white bishop at c1
-chess_board.move_piece(1, 0, "d2", "d4")
-bishop_moves = chess_board.generate_bishop_moves(0, "c1")
-print("Bishop moves:", bishop_moves)
-chess_board.move_piece(3, 0, "c1", 38)
-chess_board.print_board()
+# Find legal moves for a white rook at a1 
+rook_moves = chess_board.generate_rook_moves(0, chess_board.decode_square('a1')) 
+print("Rook moves:", rook_moves)
 
 
 
