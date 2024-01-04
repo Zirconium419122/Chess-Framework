@@ -253,6 +253,35 @@ class Bitboard:
             
             return moves
 
+    def generate_queen_moves(self, color, square): 
+        moves = [] 
+        
+        # Get the column and row of the current square 
+        col, row = square % 8, square // 8 
+        
+        # Define the queen move directions 
+        queen_directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)] 
+        
+        for direction in queen_directions: 
+            dir_col, dir_row = direction 
+            target_col, target_row = col + dir_col, row + dir_row 
+            
+            # Continue moving horizontally, vertically, or diagonally until reaching the board edge 
+            while 0 <= target_col < 8 and 0 <= target_row < 8: 
+                target_square = 8 * target_row + target_col 
+                
+                # Check if the target square is empty or occupied by an enemy piece 
+                if not self.is_square_ally(target_square, color): 
+                    moves.append(target_square) 
+                    
+                    # If the target square is occupied by an enemy, stop sliding in that direction 
+                    if not self.is_square_empty(target_square): 
+                        break 
+                
+                target_col, target_row = target_col + dir_col, target_row + dir_row 
+        
+        return moves
+
 
     def is_square_empty(self, square):
         # Check if the square is empty (no pieces present)
@@ -268,11 +297,11 @@ class Bitboard:
 
 # Example usage: 
 chess_board = Bitboard() 
-chess_board.initialize_starting_position()
+chess_board.initialize_starting_position() 
 
-# Find legal moves for a white rook at a1 
-rook_moves = chess_board.generate_rook_moves(0, chess_board.decode_square('a1')) 
-print("Rook moves:", rook_moves)
+# Find legal moves for a white queen at d1 
+queen_moves = chess_board.generate_queen_moves(0, chess_board.decode_square('d1')) 
+print("Queen moves:", queen_moves)
 
 
 
