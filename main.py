@@ -31,12 +31,12 @@ class Bitboard:
             self.set_piece(4, 1, i + 55 if i == 1 else i + 63)
         
         # White and black queens
-        self.set_piece(5, 0, 4)
-        self.set_piece(5, 1, 60)
+        self.set_piece(5, 0, 3)
+        self.set_piece(5, 1, 59)
 
         # White and black kings
-        self.set_piece(6, 0, 3)
-        self.set_piece(6, 1, 59)
+        self.set_piece(6, 0, 4)
+        self.set_piece(6, 1, 60)
 
 
     def set_piece(self, piece_type, color, square):
@@ -224,61 +224,78 @@ class Bitboard:
 
         return moves
 
-    def generate_rook_moves(self, color, square): 
+    def generate_rook_moves(self, color, square):
         moves = []
 
+        if isinstance(square, str):
+            square = self.decode_square(square)
 
-        # Get the column and row of the current square 
+        # Get the column and row of the current square
         col, row = square % 8, square // 8
 
         # Define the rook move directions
         rook_directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-        for direction in rook_directions: 
-            dir_col, dir_row = direction 
+        for direction in rook_directions:
+            dir_col, dir_row = direction
             target_col, target_row = col + dir_col, row + dir_row
 
             # Continue moving horizontally or vertically until reaching the board edge
-            while 0 <= target_col < 8 and 0 <= target_row < 8: 
-                target_square = 8 * target_row + target_col 
+            while 0 <= target_col < 8 and 0 <= target_row < 8:
+                target_square = 8 * target_row + target_col
                 
-                # Check if the target square is empty or occupied by an enemy piece 
-                if not self.is_square_ally(target_square, color): 
-                    moves.append(target_square) 
+                # Check if the target square is empty or occupied by an enemy piece
+                if not self.is_square_ally(target_square, color):
+                    moves.append(target_square)
                     
-                    # If the target square is occupied by an enemy, stop sliding in that direction 
-                    if not self.is_square_empty(target_square): 
-                        break 
-                target_col, target_row = target_col + dir_col, target_row + dir_row 
+                    # If the target square is occupied by an enemy, stop sliding in that direction
+                    if not self.is_square_empty(target_square):
+                        break
+
+                target_col, target_row = target_col + dir_col, target_row + dir_row
             
             return moves
 
     def generate_queen_moves(self, color, square): 
-        moves = [] 
+        moves = []
+
+        if isinstance(square, str):
+            square = self.decode_square(square)
+
+        print(f"The square being tested for legal moves: {square}")
         
         # Get the column and row of the current square 
-        col, row = square % 8, square // 8 
+        col, row = square % 8, square // 8
+
+        print(f"The collum: {col} and row: {row}")
         
         # Define the queen move directions 
-        queen_directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)] 
+        queen_directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
         
-        for direction in queen_directions: 
-            dir_col, dir_row = direction 
-            target_col, target_row = col + dir_col, row + dir_row 
+        for direction in queen_directions:
+            dir_col, dir_row = direction
+            target_col, target_row = col + dir_col, row + dir_row
+
+            print(f"The direction collum: {dir_col} and the direction row: {dir_row}")
             
-            # Continue moving horizontally, vertically, or diagonally until reaching the board edge 
-            while 0 <= target_col < 8 and 0 <= target_row < 8: 
-                target_square = 8 * target_row + target_col 
+            # Continue moving horizontally, vertically, or diagonally until reaching the board edge
+            while 0 <= target_col < 8 and 0 <= target_row < 8:
+                target_square = 8 * target_row + target_col
+                print(f"This square is a legal move candidate: {target_square}")
                 
-                # Check if the target square is empty or occupied by an enemy piece 
-                if not self.is_square_ally(target_square, color): 
-                    moves.append(target_square) 
+                # Check if the target square is empty or occupied by an enemy piece
+                if not self.is_square_ally(target_square, color):
+                    moves.append(target_square)
+                    print(f"This square is a legal move: {target_square}")
                     
-                    # If the target square is occupied by an enemy, stop sliding in that direction 
-                    if not self.is_square_empty(target_square): 
-                        break 
+                    # If the target square is occupied by an enemy, stop sliding in that direction
+                    if not self.is_square_empty(target_square):
+                        break
                 
-                target_col, target_row = target_col + dir_col, target_row + dir_row 
+                target_col, target_row = target_col + dir_col, target_row + dir_row
+
+                if self.is_square_ally(target_square, color):
+                    break
         
         return moves
 
@@ -295,13 +312,16 @@ class Bitboard:
         # Check if the square is occupied by an ally piece
         return any(self.get_piece(piece_type, color, square) for piece_type in range(1, 7))
 
-# Example usage: 
-chess_board = Bitboard() 
-chess_board.initialize_starting_position() 
+# Example usage:
+chess_board = Bitboard()
+chess_board.initialize_starting_position()
 
-# Find legal moves for a white queen at d1 
-queen_moves = chess_board.generate_queen_moves(0, chess_board.decode_square('d1')) 
+# Find legal moves for a white queen at d1
+chess_board.move_piece(1, 0, "d2", "d4")
+queen_moves = chess_board.generate_queen_moves(0, "d1")
 print("Queen moves:", queen_moves)
+chess_board.move_piece(5, 0, "d1", 19)
+chess_board.print_board()
 
 
 
