@@ -254,7 +254,7 @@ class Bitboard:
 
                 target_col, target_row = target_col + dir_col, target_row + dir_row
             
-            return moves
+        return moves
 
     def generate_queen_moves(self, color, square): 
         moves = []
