@@ -10,8 +10,8 @@ The chess framework provides a basic framework for representing the chessboard, 
 
 - Bitboard representation of the chessboard
 - Initialization of the starting position
-- Piece movement (e.g., pawn, knight)
-- Legal move generation for pawns and knights
+- Piece movement for all pieces
+- Legal move generation for all pieces (excluding kings for now)
 
 ## Usage
 
@@ -19,4 +19,9 @@ The chess framework provides a basic framework for representing the chessboard, 
 
    ```bash
    git clone https://github.com/Zirconium419122/Chess-Framework.git
-   cd chess-engine
+2. Navigate into the project's directory:
+   ```bash
+   cd chess-framework
+3. Run the main.py file:
+   ```bash
+   python main.py
