@@ -168,7 +168,7 @@ class Bitboard:
         return moves
     
     def generate_knight_moves(self, color, square):
-        moves = []
+        moves_bitboard = 0
         
         if isinstance(square, str):
             square = self.decode_square(square)
@@ -182,15 +182,16 @@ class Bitboard:
         for move in knight_moves:
             new_row = row + move[0]
             new_col = col + move[1]
-
+            
             # Check if the target square is within the board bounds
             if 0 <= new_row < 8 and 0 <= new_col < 8:
                 # Check if the target square is empty or occupied by an enemy piece
                 target_square = new_row * 8 + new_col
                 if not self.is_square_ally(target_square, color):
-                    moves.append(target_square)
+                    # Set the corresponding bit for the target square in the bitboard
+                    oves_bitboard |= 1 << target_square
 
-        return moves
+        return moves_bitboard
 
     def generate_bishop_moves(self, color, square):
         moves = []
