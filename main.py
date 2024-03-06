@@ -169,27 +169,33 @@ class Bitboard:
     
     def generate_knight_moves(self, color, square):
         moves_bitboard = 0
-        
+
         if isinstance(square, str):
             square = self.decode_square(square)
 
-        row = square // 8
-        col = square % 8
+        # Convert the square to a bitboard representation
+        bitboard = 1 << square
 
-        # Define the 8 possible moves of a knight
-        knight_moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1)]
+        # Define masks to avoid wrapping
+        notAFile = 0xfefefefefefefefe
+        notABFile = 0xfcfcfcfcfcfcfcfc
+        notHFile = 0x7f7f7f7f7f7f7f7f
+        notGHFile = 0x3f3f3f3f3f3f3f3f
+        
+        # Generate knight moves using bitwise operations
+        noNoEa = (bitboard << 17) & notAFile
+        noEaEa = (bitboard << 10) & notABFile
+        soEaEa = (bitboard >> 6) & notABFile
+        soSoEa = (bitboard >> 15) & notAFile
+        noNoWe = (bitboard << 15) & notHFile
+        noWeWe = (bitboard << 6) & notGHFile
+        soWeWe = (bitboard >> 10) & notGHFile
+        soSoWe = (bitboard >> 17) & notHFile
 
-        for move in knight_moves:
-            new_row = row + move[0]
-            new_col = col + move[1]
-            
-            # Check if the target square is within the board bounds
-            if 0 <= new_row < 8 and 0 <= new_col < 8:
-                # Check if the target square is empty or occupied by an enemy piece
-                target_square = new_row * 8 + new_col
-                if not self.is_square_ally(target_square, color):
-                    # Set the corresponding bit for the target square in the bitboard
-                    moves_bitboard |= 1 << target_square
+        # Combine all moves into a single bitboard
+        moves_bitboard = noNoEa | noEaEa | soEaEa | soSoEa | noNoWe | noWeWe | soWeWe | soSoWe
+
+        moves_bitboard &= ~self.get_ally_pieces(color)
 
         return moves_bitboard
 
@@ -304,14 +310,30 @@ class Bitboard:
     def is_square_ally(self, square, color):
         # Check if the square is occupied by an ally piece
         return any(self.get_piece(piece_type, color, square) for piece_type in range(1, 7))
+    
+    def get_ally_pieces(self, color):
+        ally_pieces_bitboard = 0
+    
+        for piece_type in range(1, 7):
+            ally_pieces_bitboard |= self.get_piece_bitboard(piece_type, color)
+
+        return ally_pieces_bitboard
+
+    def get_piece_bitboard(self, piece_type, color):
+        piece_bitboard = 0
+    
+        for square in range(64):
+            if self.get_piece(piece_type, color, square):
+                piece_bitboard |= 1 << square
+
+        return piece_bitboard
 
 # Example usage:
 chess_board = Bitboard()
 chess_board.initialize_starting_position()
 
 # Find legal moves for a white knight at g1
-chess_board.move_piece(2, 0, "g1", "f3")
-knight_moves = chess_board.generate_knight_moves(0, "f3")
+knight_moves = chess_board.generate_knight_moves(0, "g1")
 print("Knight moves:")
 chess_board.print_bitboard(knight_moves)
 
