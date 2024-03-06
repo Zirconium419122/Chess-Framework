@@ -31,12 +31,12 @@ class Bitboard:
             self.set_piece(4, 1, i + 55 if i == 1 else i + 63)
         
         # White and black queens
-        self.set_piece(5, 0, 3)
-        self.set_piece(5, 1, 59)
+        self.set_piece(5, 0, 4)
+        self.set_piece(5, 1, 60)
 
         # White and black kings
-        self.set_piece(6, 0, 4)
-        self.set_piece(6, 1, 60)
+        self.set_piece(6, 0, 3)
+        self.set_piece(6, 1, 59)
 
 
     def set_piece(self, piece_type, color, square):
@@ -189,7 +189,7 @@ class Bitboard:
                 target_square = new_row * 8 + new_col
                 if not self.is_square_ally(target_square, color):
                     # Set the corresponding bit for the target square in the bitboard
-                    oves_bitboard |= 1 << target_square
+                    moves_bitboard |= 1 << target_square
 
         return moves_bitboard
 
@@ -262,13 +262,9 @@ class Bitboard:
 
         if isinstance(square, str):
             square = self.decode_square(square)
-
-        print(f"The square being tested for legal moves: {square}")
         
         # Get the column and row of the current square 
         col, row = square % 8, square // 8
-
-        print(f"The collum: {col} and row: {row}")
         
         # Define the queen move directions 
         queen_directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
@@ -276,18 +272,14 @@ class Bitboard:
         for direction in queen_directions:
             dir_col, dir_row = direction
             target_col, target_row = col + dir_col, row + dir_row
-
-            print(f"The direction collum: {dir_col} and the direction row: {dir_row}")
             
             # Continue moving horizontally, vertically, or diagonally until reaching the board edge
             while 0 <= target_col < 8 and 0 <= target_row < 8:
                 target_square = 8 * target_row + target_col
-                print(f"This square is a legal move candidate: {target_square}")
                 
                 # Check if the target square is empty or occupied by an enemy piece
                 if not self.is_square_ally(target_square, color):
                     moves.append(target_square)
-                    print(f"This square is a legal move: {target_square}")
                     
                     # If the target square is occupied by an enemy, stop sliding in that direction
                     if not self.is_square_empty(target_square):
@@ -317,12 +309,11 @@ class Bitboard:
 chess_board = Bitboard()
 chess_board.initialize_starting_position()
 
-# Find legal moves for a white queen at d1
-chess_board.move_piece(1, 0, "d2", "d4")
-queen_moves = chess_board.generate_queen_moves(0, "d1")
-print("Queen moves:", queen_moves)
-chess_board.move_piece(5, 0, "d1", 19)
-chess_board.print_board()
+# Find legal moves for a white knight at g1
+chess_board.move_piece(2, 0, "g1", "f3")
+knight_moves = chess_board.generate_knight_moves(0, "f3")
+print("Knight moves:")
+chess_board.print_bitboard(knight_moves)
 
 
 
