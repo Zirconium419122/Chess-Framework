@@ -43,7 +43,7 @@ class Bitboard:
         self.set_piece(6, 0, decode_square("e1"))
         self.set_piece(6, 1, decode_square("e8"))
 
-    def set_piece(self, piece_type, color, square):
+    def set_piece(self, piece_type: int, color: int, square: str | int):
         # Set the bit for the given piece type, color, and square to 1
         if isinstance(square, str):
             square = decode_square(square)
@@ -61,7 +61,7 @@ class Bitboard:
         elif piece_type == 6:
             self.kings[color] |= 1 << square
     
-    def clear_square(self, piece_type, color, square):
+    def clear_square(self, piece_type: int, color: int, square: int):
         # Clear the bit for the given piece type, color, and square
         if piece_type == 1:
             self.pawns[color] &= ~(1 << square)
@@ -76,7 +76,7 @@ class Bitboard:
         elif piece_type == 6:
             self.kings[color] &= ~(1 << square)
 
-    def get_piece(self, piece_type, color, square):
+    def get_piece(self, piece_type: int, color: int, square: str | int):
         # Check if the bit for the given piece type, color, and square is 1
         if isinstance(square, str):
             square = decode_square(square)
@@ -94,7 +94,7 @@ class Bitboard:
         elif piece_type == 6:
             return (self.kings[color] & (1 << square)) != 0
 
-    def move_piece(self, piece_type, color, from_square, to_square):
+    def move_piece(self, piece_type: int, color: int, from_square: str | int, to_square: str | int):
         # Move a piece from one square to another
         if isinstance(from_square, str):
             from_square = decode_square(from_square)
