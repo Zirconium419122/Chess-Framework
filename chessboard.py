@@ -8,5 +8,5 @@ class Chessboard:
     def initialize_board(self):
         self.bitboard.initialize_starting_position()
 
-    def make_move(self, piece_type, color, from_square, to_square):
+    def make_move(self, piece_type: int, color: int, from_square: str | int, to_square: str | int):
         self.bitboard.move_piece(piece_type, color, from_square, to_square)
