@@ -1,5 +1,3 @@
-from bitboard import Bitboard
-
 @staticmethod
 def decode_square(coord: str) -> int:
     if len(coord) != 2:
@@ -15,7 +13,7 @@ def decode_square(coord: str) -> int:
 
     return 8 * rank_index + file_index
 
-def print_board(bitboard: Bitboard):
+def print_board(bitboard: any):
     for color in range(2):
         print(f"{['White', 'Black'][color]} Pawns:")
         print_bitboard(bitboard.pawns[color])
@@ -31,7 +29,7 @@ def print_board(bitboard: Bitboard):
         print_bitboard(bitboard.kings[color])
         print()
     
-def print_bitboard(bitboard: Bitboard):
+def print_bitboard(bitboard: any):
     for rank in range(8):
         row = [(bitboard >> (8 * rank + file)) & 1 for file in range(8)]
         print("".join("X" if square else "." for square in row))

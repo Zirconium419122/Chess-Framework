@@ -1,7 +1,8 @@
+from bitboard import Bitboard
 from square_manipulation import *
 from utilities import *
 
-def generate_pawn_moves(self, color, square, bitboard):
+def generate_pawn_moves(color: int, square: str | int, bitboard: Bitboard):
     moves = []
 
     if isinstance(square, str):
@@ -9,26 +10,26 @@ def generate_pawn_moves(self, color, square, bitboard):
 
     # Pawn moves forward one square
     single_move = square + (8 if color == 0 else -8)
-    if bitboard.is_square_empty(single_move):
+    if is_square_empty(bitboard, single_move):
         moves.append(single_move)
 
         # Pawn double move from the starting position
         starting_rank = 1 if color == 0 else 6
         double_move = square + (16 if color == 0 else -16)
-        if square // 8 == starting_rank and self.is_square_empty(double_move):
+        if square // 8 == starting_rank and is_square_empty(bitboard, double_move):
             moves.append(double_move)
 
     # Pawn captures
     left_capture = single_move - 1
     right_capture = single_move + 1
-    if self.is_square_enemy(left_capture, color):
+    if is_square_enemy(bitboard, left_capture, color):
         moves.append(left_capture)
-    if self.is_square_enemy(right_capture, color):
+    if is_square_enemy(bitboard, right_capture, color):
         moves.append(right_capture)
 
     return moves
     
-def generate_knight_moves(chess_bitboard, color, square):
+def generate_knight_moves(chess_bitboard: Bitboard, color: int, square: str | int):
     moves_bitboard = 0
 
     if isinstance(square, str):
@@ -60,7 +61,7 @@ def generate_knight_moves(chess_bitboard, color, square):
 
     return moves_bitboard
 
-def generate_bishop_moves(self, color, square):
+def generate_bishop_moves(color, square, bitboard: Bitboard):
     moves = []
 
     if isinstance(square, str):
@@ -81,18 +82,18 @@ def generate_bishop_moves(self, color, square):
             target_square = 8 * target_row + target_col
 
             # Check if the target square is empty or occupied by an enemy piece
-            if not self.is_square_ally(target_square, color):
+            if not is_square_ally(bitboard, target_square, color):
                 moves.append(target_square)
 
                 # If the target square is occupied by an enemy, stop sliding in that direction
-                if not self.is_square_empty(target_square):
+                if not is_square_empty(bitboard, target_square):
                     break
 
             target_col, target_row = target_col + dir_col, target_row + dir_row
 
     return moves
 
-def generate_rook_moves(self, color, square):
+def generate_rook_moves(color, square, bitboard: Bitboard):
     moves = []
 
     if isinstance(square, str):
@@ -113,18 +114,18 @@ def generate_rook_moves(self, color, square):
             target_square = 8 * target_row + target_col
             
             # Check if the target square is empty or occupied by an enemy piece
-            if not self.is_square_ally(target_square, color):
+            if not is_square_ally(bitboard, target_square, color):
                 moves.append(target_square)
                 
                 # If the target square is occupied by an enemy, stop sliding in that direction
-                if not self.is_square_empty(target_square):
+                if not is_square_empty(bitboard, target_square):
                     break
 
             target_col, target_row = target_col + dir_col, target_row + dir_row
         
     return moves
 
-def generate_queen_moves(self, color, square): 
+def generate_queen_moves(color, square, bitboard: Bitboard): 
     moves = []
 
     if isinstance(square, str):
@@ -145,16 +146,16 @@ def generate_queen_moves(self, color, square):
             target_square = 8 * target_row + target_col
             
             # Check if the target square is empty or occupied by an enemy piece
-            if not self.is_square_ally(target_square, color):
+            if not is_square_ally(bitboard, target_square, color):
                 moves.append(target_square)
                 
                 # If the target square is occupied by an enemy, stop sliding in that direction
-                if not self.is_square_empty(target_square):
+                if not is_square_empty(bitboard, target_square):
                     break
             
             target_col, target_row = target_col + dir_col, target_row + dir_row
 
-            if self.is_square_ally(target_square, color):
+            if is_square_ally(bitboard, target_square, color):
                 break
     
     return moves
