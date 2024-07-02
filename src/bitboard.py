@@ -1,4 +1,4 @@
-from utilities import *
+from utilities import decode_square
 
 class Bitboard:
     def __init__(self):
@@ -61,8 +61,11 @@ class Bitboard:
         elif piece_type == 6:
             self.kings[color] |= 1 << square
     
-    def clear_square(self, piece_type: int, color: int, square: int):
+    def clear_square(self, piece_type: int, color: int, square: str | int):
         # Clear the bit for the given piece type, color, and square
+        if isinstance(square, str):
+            square = decode_square(square)
+
         if piece_type == 1:
             self.pawns[color] &= ~(1 << square)
         elif piece_type == 2:
