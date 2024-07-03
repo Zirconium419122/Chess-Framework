@@ -2,7 +2,7 @@ from bitboard import Bitboard
 from square_manipulation import *
 from utilities import *
 
-def generate_pawn_moves(color: int, square: str | int, bitboard: Bitboard):
+def generate_pawn_moves(color: int, square: str | int, bitboard: Bitboard) -> list:
     moves = []
 
     if isinstance(square, str):
@@ -29,7 +29,7 @@ def generate_pawn_moves(color: int, square: str | int, bitboard: Bitboard):
 
     return moves
     
-def generate_knight_moves(chess_bitboard: Bitboard, color: int, square: str | int):
+def generate_knight_moves(chess_bitboard: Bitboard, color: int, square: str | int) -> int:
     moves_bitboard = 0
 
     if isinstance(square, str):
@@ -61,7 +61,7 @@ def generate_knight_moves(chess_bitboard: Bitboard, color: int, square: str | in
 
     return moves_bitboard
 
-def generate_bishop_moves(color, square, bitboard: Bitboard):
+def generate_bishop_moves(color, square, bitboard: Bitboard) -> list:
     moves = []
 
     if isinstance(square, str):
@@ -93,7 +93,7 @@ def generate_bishop_moves(color, square, bitboard: Bitboard):
 
     return moves
 
-def generate_rook_moves(color, square, bitboard: Bitboard):
+def generate_rook_moves(color, square, bitboard: Bitboard) -> list:
     moves = []
 
     if isinstance(square, str):
@@ -125,7 +125,7 @@ def generate_rook_moves(color, square, bitboard: Bitboard):
         
     return moves
 
-def generate_queen_moves(color, square, bitboard: Bitboard): 
+def generate_queen_moves(color, square, bitboard: Bitboard) -> list: 
     moves = []
 
     if isinstance(square, str):
